@@ -6,16 +6,11 @@ jobs:
     steps:
       - checkout
       - run: |
-          cd porterbot-controller
           # ARM build
           docker run --rm --privileged multiarch/qemu-user-static:register --reset 
           docker build -t repo.treescale.com/cecchisandrone/porterbot-controller:latest . 
           docker login repo.treescale.com -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD
           docker push repo.treescale.com/cecchisandrone/porterbot-controller:latest
-      - persist_to_workspace:
-          root: /home/circleci
-          paths:
-            - project/*
   deploy:
     machine:
       enabled: true
