@@ -1,5 +1,5 @@
 var Gpio = require('pigpio').Gpio
-var io = require('socket.io')(http);
+var io = require('socket.io')(80);
 
 led = new Gpio(17, {mode: Gpio.OUTPUT});
 

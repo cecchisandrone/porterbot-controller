@@ -1,0 +1,33 @@
+version: 2
+jobs:
+  build:
+    machine:
+      enabled: true
+    steps:
+      - checkout
+      - run: |
+          cd porterbot-controller
+          # ARM build
+          docker run --rm --privileged multiarch/qemu-user-static:register --reset 
+          docker build -t repo.treescale.com/cecchisandrone/porterbot-controller:latest . 
+          docker login repo.treescale.com -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD
+          docker push repo.treescale.com/cecchisandrone/porterbot-controller:latest
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project/*
+  deploy:
+    machine:
+      enabled: true
+    steps:
+      - run:
+          command: ssh -o StrictHostKeyChecking=no -l pi $PORTERBOT_SSH_HOST -p $PORTERBOT_SSH_PORT "docker pull repo.treescale.com/cecchisandrone/porterbot-controller && docker rm -f porterbot-controller || true &&  docker run --name porterbot-controller -p 8080:80 --privileged --device /dev/gpiomem --restart always -d repo.treescale.com/cecchisandrone/porterbot-controller"
+          no_output_timeout: 30m
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
