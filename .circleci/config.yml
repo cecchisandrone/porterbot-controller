@@ -16,7 +16,7 @@ jobs:
       enabled: true
     steps:
       - run:
-          command: ssh -o StrictHostKeyChecking=no -l pi $PORTERBOT_SSH_HOST -p $PORTERBOT_SSH_PORT "docker pull repo.treescale.com/cecchisandrone/porterbot-controller && docker rm -f porterbot-controller || true &&  docker run --name porterbot-controller -p 8080:80 --privileged --device /dev/gpiomem --restart always -d repo.treescale.com/cecchisandrone/porterbot-controller"
+          command: ssh -o StrictHostKeyChecking=no -l pi $PORTERBOT_SSH_HOST -p $PORTERBOT_SSH_PORT "docker pull repo.treescale.com/cecchisandrone/porterbot-controller && docker rm -f porterbot-controller || true &&  docker run --name porterbot-controller -p 8080:8080 --privileged --device /dev/gpiomem --restart always -d repo.treescale.com/cecchisandrone/porterbot-controller"
           no_output_timeout: 30m
 workflows:
   version: 2

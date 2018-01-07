@@ -1,17 +1,23 @@
-FROM arm32v6/node:9.3.0-alpine
-RUN apk add --no-cache --virtual .build-deps \
-        binutils-gold \
-        g++ \
-        gcc \
-        gnupg \
-        libgcc \
-        linux-headers \
-        make \
-        python
-RUN wget abyz.co.uk/rpi/pigpio/pigpio.zip && unzip pigpio.zip && cd PIGPIO && make -i -k && make -i -k install
+FROM resin/rpi-raspbian:stretch
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    python \
+    python-dev \
+    python-pip \
+    python-virtualenv \
+    --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
-ADD index.js .
-ADD package.json .
-RUN npm install
-RUN apk del .build-deps
-CMD [ "node", "index.js" ]
+
+COPY . .
+
+RUN pip install setuptools
+
+RUN pip install -r requirements.txt
+
+CMD [ "python", "/app/main.py" ]
+
+EXPOSE 8080
