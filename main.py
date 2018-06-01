@@ -4,17 +4,30 @@ import time
 import RPi.GPIO as GPIO
 from math import *
 
-leftTriggerPin = 17
-leftPwmPin = 27
-pwmFrequency = 50
+leftForwardPin = 22
+leftBackwardPin = 27
+leftPwmPin = 17
+rightForwardPin = 13
+rightBackwardPin = 6
+rightPwmPin = 5
+pwmFrequency = 1000
 maxInputValue = 150
-maxDutyCycle = 40
+maxDutyCycle = 30
 steeringInputThreshold = 105
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(leftTriggerPin, GPIO.OUT)
+
+# Left pins setup
+GPIO.setup(leftForwardPin, GPIO.OUT)
+GPIO.setup(leftBackwardPin, GPIO.OUT)
 GPIO.setup(leftPwmPin, GPIO.OUT)
 leftMotor = GPIO.PWM(leftPwmPin, pwmFrequency)
+
+# Right pins setup
+GPIO.setup(rightForwardPin, GPIO.OUT)
+GPIO.setup(rightBackwardPin, GPIO.OUT)
+GPIO.setup(rightPwmPin, GPIO.OUT)
+rightMotor = GPIO.PWM(rightPwmPin, pwmFrequency)
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -24,7 +37,7 @@ def handle_my_custom_event(json):
     x = json['x']
     y = json['y']
     print('received: ' + str(x) + ' ' + str(y))
-       
+
     dutyCycle = (sqrt(pow(x,2) + pow(y,2)) * maxDutyCycle)  / maxInputValue
 
     if abs(x) > steeringInputThreshold: # Turn
@@ -41,33 +54,39 @@ def handle_my_custom_event(json):
         else: # Backward
             rightDutyCycle = -dutyCycle
             leftDutyCycle = -dutyCycle
-    
+
     print('leftDutyCycle: ' + str(leftDutyCycle))
     print('rightDutyCycle: ' + str(rightDutyCycle))
 
     # Forward / backward
     if leftDutyCycle > 0:
-        GPIO.output(leftTriggerPin, GPIO.HIGH)
+        GPIO.output(leftForwardPin, GPIO.HIGH)
+        GPIO.output(leftBackwardPin, GPIO.LOW)
     else:
-        GPIO.output(leftTriggerPin, GPIO.LOW)
+        GPIO.output(leftForwardPin, GPIO.LOW)
+        GPIO.output(leftBackwardPin, GPIO.HIGH)
 
-    #if rightDutyCycle > 0:
-    #    GPIO.output(rightTriggerPin, GPIO.HIGH)
-    #else:
-    #    GPIO.output(rightTriggerPin, GPIO.LOW)
+    if rightDutyCycle > 0:
+        GPIO.output(rightForwardPin, GPIO.HIGH)
+        GPIO.output(rightBackwardPin, GPIO.LOW)
+    else:
+        GPIO.output(rightForwardPin, GPIO.LOW)
+        GPIO.output(rightBackwardPin, GPIO.HIGH)
 
     leftMotor.ChangeDutyCycle(dutyCycle)
-    # rightMotor.ChangeDutyCycle(dutyCycle)
-    
+    rightMotor.ChangeDutyCycle(dutyCycle)
+
 @socketio.on('connect')
 def test_connect():
     print('Client connected')
     leftMotor.start(0)
+    rightMotor.start(0)
 
 @socketio.on('disconnect')
 def test_disconnect():
     print('Client disconnected')
     leftMotor.stop()
+    rightMotor.stop()
     GPIO.cleanup()
 
 if __name__ == '__main__':
