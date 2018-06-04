@@ -51,7 +51,7 @@ print('porterbot-controller initialization completed')
 def handle_my_custom_event(json):
     x = json['x']
     y = json['y']
-    print('received: ' + str(x) + ' ' + str(y))
+    #print('received: ' + str(x) + ' ' + str(y))
        
     dutyCycle = (sqrt(pow(x,2) + pow(y,2)) * maxDutyCycle)  / maxInputValue
 
@@ -70,8 +70,8 @@ def handle_my_custom_event(json):
             rightDutyCycle = -dutyCycle
             leftDutyCycle = -dutyCycle
     
-    print('leftDutyCycle: ' + str(leftDutyCycle))
-    print('rightDutyCycle: ' + str(rightDutyCycle))
+    #print('leftDutyCycle: ' + str(leftDutyCycle))
+    #print('rightDutyCycle: ' + str(rightDutyCycle))
 
     # Forward / backward
     if leftDutyCycle > 0:
