@@ -24,9 +24,9 @@ leftPwmPin = 17
 rightForwardPin = 13
 rightBackwardPin = 6
 rightPwmPin = 5
-pwmFrequency = 2000
+pwmFrequency = 3000
 maxInputValue = 175
-maxDutyCycle = 20
+maxDutyCycle = 40
 steeringInputThreshold = 105
 
 GPIO.setmode(GPIO.BCM)
