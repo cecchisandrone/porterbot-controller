@@ -5,10 +5,11 @@ RUN apt-get update && apt-get install -y \
     gcc \
     python \
     python-dev \
-    python-pip \
     python-virtualenv \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
+
+RUN wget https://bootstrap.pypa.io/get-pip.py && python get-pip.py
 
 WORKDIR /app
 
