@@ -4,6 +4,7 @@ FROM resin/rpi-raspbian:stretch
 RUN apt-get update && apt-get install -y \
     gcc \
     python \
+    wget \
     python-dev \
     python-virtualenv \
     --no-install-recommends && \
