@@ -4,7 +4,6 @@ import time
 import RPi.GPIO as GPIO
 from math import *
 import signal
-from flask_cors import CORS
 
 def handle_exit_signal(signal_number, stack):
     print("Detected signal " + str(signal_number))
@@ -45,8 +44,7 @@ GPIO.setup(rightPwmPin, GPIO.OUT)
 rightMotor = GPIO.PWM(rightPwmPin, pwmFrequency)
 
 app = Flask(__name__)
-CORS(app)
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 print('porterbot-controller initialization completed')
 
 @socketio.on('joystickState')
