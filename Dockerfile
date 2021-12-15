@@ -4,13 +4,11 @@ FROM resin/rpi-raspbian:stretch
 RUN apt-get update && apt-get install -y \
     gcc \
     python \
-    wget \
     python-dev \
+    python-pip \
     python-virtualenv \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
-
-RUN wget https://bootstrap.pypa.io/get-pip.py && python get-pip.py
 
 WORKDIR /app
 
@@ -20,7 +18,7 @@ RUN pip install setuptools
 
 RUN pip install -r requirements.txt
 
-RUN apt remove gcc wget && apt autoremove
+RUN apt remove gcc && apt autoremove
 
 CMD [ "python", "/app/main.py" ]
 
