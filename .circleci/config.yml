@@ -3,14 +3,13 @@ jobs:
   build:
     machine:
       image: ubuntu-2004:202111-01
+    resource_class: arm.medium
     steps:
       - checkout
       - run: |
-          # ARM build
-          docker run --rm --privileged multiarch/qemu-user-static:register --reset 
           docker build -t cecchisandrone/porterbot-controller:latest . 
           docker login -u $DOCKER_REGISTRY_USERNAME -p $DOCKER_REGISTRY_PASSWORD
-          docker push cecchisandrone/porterbot-controller:latest
+          docker buildx build --platform linux/arm/v7 -t cecchisandrone/porterbot-controller:latest --push .
   deploy:
     machine:
       image: ubuntu-2004:202111-01
