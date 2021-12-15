@@ -20,6 +20,8 @@ RUN pip install setuptools
 
 RUN pip install -r requirements.txt
 
+RUN apt remove gcc wget && apt autoremove
+
 CMD [ "python", "/app/main.py" ]
 
 EXPOSE 8080
