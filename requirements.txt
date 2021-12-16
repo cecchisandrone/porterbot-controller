@@ -1,4 +1,4 @@
-flask-socketio==2.9.3
-eventlet==0.21.0
-Flask==0.12.2
+flask-socketio==4.3.2
+eventlet==0.33.0
+Flask==0.12.5
 rpi.gpio==0.7.0
