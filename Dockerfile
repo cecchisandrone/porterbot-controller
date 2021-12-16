@@ -5,5 +5,5 @@ COPY main.py requirements.txt ./
 RUN CFLAGS=-fcommon pip install --no-cache-dir -r requirements.txt
 RUN apk del build-base
 EXPOSE 8080
-ENV PYTHONUNBUFFERED=0
+ENV PYTHONUNBUFFERED=1
 CMD [ "python", "/app/main.py" ]
